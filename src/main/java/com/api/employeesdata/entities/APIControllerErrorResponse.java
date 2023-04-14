@@ -3,6 +3,15 @@ package com.api.employeesdata.entities;
 public class APIControllerErrorResponse {
     private String message;
     private long timestamp;
+    private int status;
+
+    public int getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public APIControllerErrorResponse() {
     }

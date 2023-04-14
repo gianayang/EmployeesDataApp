@@ -1,15 +1,21 @@
 package com.api.employeesdata.entities;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table
@@ -38,8 +44,13 @@ public class Employee {
     @Column(name = "age")
     private int age;
 
-    @Transient
-    private String token;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.MERGE,
+            CascadeType.DETACH,
+            CascadeType.REFRESH
+    })
+    @JoinTable(name = "Employee_Skill", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private List<Skill> skills = new ArrayList<>();
 
     public Employee() {
     }
@@ -72,6 +83,22 @@ public class Employee {
 
     public String getLastName() {
         return this.lastName;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public List<String> getSkills() {
+        List<String> skillList = new ArrayList<String>();
+        for (Skill skill : this.skills) {
+            skillList.add(skill.getSkill_name());
+        }
+        return skillList;
+    }
+
+    public void addSkill(Skill skill) {
+        this.skills.add(skill);
     }
 
     public void setLastName(String last_name) {
@@ -124,6 +151,8 @@ public class Employee {
                 ", email='" + getEmail() + "'" +
                 ", active='" + isActive() + "'" +
                 ", age='" + getAge() + "'" +
+                ", skills= " + getSkills() +
                 "}";
     }
+
 }

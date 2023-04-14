@@ -7,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 @Entity
 @Table
@@ -18,23 +17,19 @@ public class User {
     @Column(name = "user_id", updatable = false, nullable = false, columnDefinition = "VARCHAR(36)")
     private String user_id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Column(name = "password")
     private String password;
 
-    @Transient
-    private String token;
-
     public User() {
     }
 
-    public User(String username, String password, String token) {
+    public User(String username, String password) {
         super();
         this.username = username;
         this.password = password;
-        this.token = token;
     }
 
     public String getUsername() {
@@ -61,21 +56,12 @@ public class User {
         this.password = password;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return this.token;
-    }
-
     @Override
     public String toString() {
         return "{" +
                 " employee_id='" + getUser_id() + "'" +
                 ", username='" + getUsername() + "'" +
                 ", password='" + getPassword() + "'" +
-                ", token='" + getToken() + "'" +
                 "}";
     }
 }
