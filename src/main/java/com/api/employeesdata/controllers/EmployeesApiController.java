@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +23,8 @@ import com.api.employeesdata.entities.User;
 import com.api.employeesdata.services.EmployeeApiService;
 import com.google.gson.Gson;
 
+import jakarta.validation.Valid;
+
 @CrossOrigin(origins={"*"})
 @RestController
 @RequestMapping("/api")
@@ -36,7 +39,7 @@ public class EmployeesApiController {
     }
     
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Validated @RequestBody User user) {
+    public ResponseEntity<String> registerUser(@Validated@RequestBody User user) {
 
         employeeApiService.register(user);
 
@@ -47,7 +50,7 @@ public class EmployeesApiController {
     public ResponseEntity<String> showAllEmployees() {
         
         List<Employee> employees = employeeApiService.listAllEmployees();
-        
+
         return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(employees));
     }
 
@@ -59,7 +62,7 @@ public class EmployeesApiController {
     }
 
     @PostMapping(value = "/employees")
-    public ResponseEntity<String> addEmployee(@RequestBody Employee emp) {
+    public ResponseEntity<String> addEmployee(@Valid@RequestBody Employee emp, BindingResult bindingResult) {
 
         Employee newEmployee = employeeApiService.addEmployee(emp);
         
@@ -67,7 +70,7 @@ public class EmployeesApiController {
     }
 
     @PutMapping(value = "/employees/{EmployeeId}")
-    public ResponseEntity<String> updateEmployee(@PathVariable String EmployeeId, @RequestBody Employee emp) {
+    public ResponseEntity<String> updateEmployee(@PathVariable String EmployeeId, @Valid@RequestBody Employee emp, BindingResult bindingResult) {
 
         Employee updatedEmployee = employeeApiService.updateEmployee(emp);
 

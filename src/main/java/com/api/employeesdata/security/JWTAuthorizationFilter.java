@@ -22,12 +22,15 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = request.getHeader("Authorization"); // Bearer JWT
+
+        String header = request.getHeader("Authorization"); // Bearer JWT
         
-        if (token == null ) {
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
+        String token = header.replace("Bearer ", "");
 
         String user = JWT.require(Algorithm.HMAC512("a2a0813514d36af6fd381fe519f01c0d416bf82abcbd6f757a0962c11482ae5b"))
                 .build()

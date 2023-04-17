@@ -40,10 +40,6 @@ public class EmployeeApiServiceImpl implements EmployeeApiService {
     @Override
     public void register(User user) {
         
-        if (user.getUsername().equals("") || user.getPassword().equals("")) {
-            throw new InvalidUserException("Username and password cannot be empty.");
-        }
-        
         //bcrypt password
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
@@ -59,8 +55,6 @@ public class EmployeeApiServiceImpl implements EmployeeApiService {
     @Override
     public List<Employee> listAllEmployees() {
 
-        evictedAllEmployeesCachedValues();
-        evictedAllEmployeesSkillsCachedValues();
         return employeeRepository.findAll();
     }
 
@@ -68,16 +62,12 @@ public class EmployeeApiServiceImpl implements EmployeeApiService {
     public Employee addEmployee(Employee employee) {
 
         Employee newEmp = employeeRepository.save(employee);
-        evictedAllEmployeesCachedValues();
-        evictedAllEmployeesSkillsCachedValues();
         return newEmp;
     }
 
     @Override
     public Employee updateEmployee(Employee employee) {
 
-        evictedAllEmployeesCachedValues();
-        evictedAllEmployeesSkillsCachedValues();
         return employeeRepository.save(employee);
     }
 
@@ -91,8 +81,6 @@ public class EmployeeApiServiceImpl implements EmployeeApiService {
         }
 
         employeeRepository.deleteById(employeeId);
-        evictedAllEmployeesCachedValues();
-        evictedAllEmployeesSkillsCachedValues();
     }
 
     @Override
