@@ -32,13 +32,17 @@ public class EmployeesApiController {
 
     private EmployeeApiService employeeApiService;
     private Gson gson = new Gson();
+    private static final String REGISTER_API = "/register";
+    private static final String EMPLOYEES_API = "/employees";
+    private static final String GET_SKILLS_LIST_API = "/skills";
+    private static final String EMPLOYEE_ID_API = "/{EmployeeId}";
 
     public EmployeesApiController(EmployeeApiService employeeApiService) {
         
         this.employeeApiService = employeeApiService;
     }
     
-    @PostMapping("/register")
+    @PostMapping(value = REGISTER_API)
     public ResponseEntity<String> registerUser(@Validated@RequestBody User user) {
 
         employeeApiService.register(user);
@@ -46,7 +50,7 @@ public class EmployeesApiController {
         return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(user));
     }
 
-    @GetMapping(value = "/employees")
+    @GetMapping(value = EMPLOYEES_API)
     public ResponseEntity<String> showAllEmployees() {
         
         List<Employee> employees = employeeApiService.listAllEmployees();
@@ -54,14 +58,14 @@ public class EmployeesApiController {
         return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(employees));
     }
 
-    @GetMapping(value = "/skills")
+    @GetMapping(value = GET_SKILLS_LIST_API)
     public ResponseEntity<String> showAllSkills() {
         
         List<Skill> skills = employeeApiService.listAllSkills();
         return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(skills));
     }
 
-    @PostMapping(value = "/employees")
+    @PostMapping(value = EMPLOYEES_API)
     public ResponseEntity<String> addEmployee(@Valid@RequestBody Employee emp, BindingResult bindingResult) {
 
         Employee newEmployee = employeeApiService.addEmployee(emp);
@@ -69,7 +73,7 @@ public class EmployeesApiController {
         return ResponseEntity.status(HttpStatus.OK).body(newEmployee.getEmployee_id());
     }
 
-    @PutMapping(value = "/employees/{EmployeeId}")
+    @PutMapping(value = EMPLOYEES_API + EMPLOYEE_ID_API)
     public ResponseEntity<String> updateEmployee(@PathVariable String EmployeeId, @Valid@RequestBody Employee emp, BindingResult bindingResult) {
 
         Employee updatedEmployee = employeeApiService.updateEmployee(emp);
@@ -77,7 +81,7 @@ public class EmployeesApiController {
         return ResponseEntity.status(HttpStatus.OK).body(gson.toJson(updatedEmployee));
     }
 
-    @DeleteMapping(value = "/employees/{EmployeeId}")
+    @DeleteMapping(value = EMPLOYEES_API + EMPLOYEE_ID_API)
     public ResponseEntity<String> deleteEmployee(@PathVariable String EmployeeId) {
         
         employeeApiService.deleteEmployee(EmployeeId);

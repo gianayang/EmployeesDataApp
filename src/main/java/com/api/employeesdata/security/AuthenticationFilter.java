@@ -24,6 +24,9 @@ import lombok.AllArgsConstructor;
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private CustomAuthenticationManager authenticationManager;
+    private static final String SECRET_KEY = "a2a0813514d36af6fd381fe519f01c0d416bf82abcbd6f757a0962c11482ae5b";
+    private static final String TOKEN_HEADER = "Authorization";
+    private static final String TOKEN_STARTER = "Bearer ";
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -48,7 +51,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         String token = JWT.create()
             .withSubject(authResult.getName())
             .withExpiresAt(new Date(System.currentTimeMillis() + 72000000))
-            .sign(Algorithm.HMAC512("a2a0813514d36af6fd381fe519f01c0d416bf82abcbd6f757a0962c11482ae5b"));
-        response.addHeader("Authorization", "Bearer " + token);
+            .sign(Algorithm.HMAC512(SECRET_KEY));
+        response.addHeader(TOKEN_HEADER, TOKEN_STARTER + token);
     }
 }

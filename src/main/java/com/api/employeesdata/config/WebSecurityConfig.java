@@ -26,16 +26,28 @@ public class WebSecurityConfig {
 
     private final CustomAuthenticationManager customAuthenticationManager;
 
+    private static final String AUTHENTICATE_API = "/api/authenticate";
+
+    private static final String REGISTER_API = "/api/register";
+
+    private static final String ALL = "*";
+
+    private static final String FRONTEND_URL = "http://localhost:3000";
+
+    private static final String DATABASE_CONNECTION_API = "/h2/**";
+
+    private static final String TOKEN_HEADER = "Authorization";
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         AuthenticationFilter authenticationFilter = new AuthenticationFilter(customAuthenticationManager);
-        authenticationFilter.setFilterProcessesUrl("/api/authenticate");
+        authenticationFilter.setFilterProcessesUrl(AUTHENTICATE_API);
         http.csrf().disable()
                 .cors().configurationSource(corsConfiguration())
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers("/h2/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
+                .requestMatchers(DATABASE_CONNECTION_API).permitAll()
+                .requestMatchers(HttpMethod.POST, REGISTER_API).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new ExceptionHandlerFilter(), AuthenticationFilter.class)                
@@ -48,11 +60,11 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfiguration() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("*"));
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList(ALL));
+        corsConfiguration.setAllowedMethods(Arrays.asList(ALL));
+        corsConfiguration.setAllowedOrigins(Arrays.asList(FRONTEND_URL));
         corsConfiguration.setMaxAge(3600L);
-        corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
+        corsConfiguration.setExposedHeaders(Arrays.asList(TOKEN_HEADER));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
